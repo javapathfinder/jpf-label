@@ -1,0 +1,7 @@
+target = Synchronized
+cg.enumerate_random = true
+
+@using jpf-label
+listener = label.StateLabelText;label.StateLabelDot
+label.class = label.SynchronizedStaticMethod
+label.SynchronizedStaticMethod.method = Synchronized.setValue(int)

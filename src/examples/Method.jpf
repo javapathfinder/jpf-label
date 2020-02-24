@@ -1,0 +1,8 @@
+target = Method
+cg.enumerate_random = true
+
+@using jpf-label
+listener = label.StateLabelText;label.StateLabelDot
+label.class = label.InvokedStaticMethod; label.ReturnedVoidMethod
+label.InvokedStaticMethod.method = Method.setValue(int)
+label.ReturnedVoidMethod.method = Method.setValue(int)

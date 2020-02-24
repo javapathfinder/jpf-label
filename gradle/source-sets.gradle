@@ -1,0 +1,17 @@
+sourceSets {
+    main {
+        java.srcDirs = ["src/main"]
+        java.outputDir = file("${buildDir}/main")
+    }
+    examples {
+        java.srcDirs = ["src/examples"]
+        java.outputDir = file("${buildDir}/examples")
+        compileClasspath += sourceSets.main.output
+    }
+    test {
+        java.srcDirs = ["src/tests"]
+        java.outputDir = file("${buildDir}/tests")
+        compileClasspath += sourceSets.main.output + configurations.testRuntimeClasspath
+        runtimeClasspath += output + compileClasspath
+    }
+}

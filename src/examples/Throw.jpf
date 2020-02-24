@@ -1,0 +1,7 @@
+target = Throw
+cg.enumerate_random = true
+
+@using jpf-label
+listener = label.StateLabelText;label.StateLabelDot
+label.class = label.ThrownException
+label.ThrownException.type = java.lang.annotation.AnnotationFormatError; java.util.zip.DataFormatException

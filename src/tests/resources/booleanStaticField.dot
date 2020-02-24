@@ -1,0 +1,27 @@
+digraph statespace {
+node [colorscheme="set312" style=wedged]
+0 [style=filled fillcolor=1]
+-1 -> 0
+1 [style=filled fillcolor=1]
+0 -> 1
+1 -> 2
+2 -> 3
+4 [style=filled fillcolor=1]
+1 -> 4
+4 -> 5
+5 -> 3
+6 [style=filled fillcolor=1]
+4 -> 6
+6 -> 7
+7 -> 3
+8 [style=filled fillcolor=1]
+6 -> 8
+8 -> 9
+9 -> 3
+10 [style=filled fillcolor=1]
+8 -> 10
+10 -> 11
+11 -> 3
+12 [style=filled fillcolor=1]
+10 -> 12
+}

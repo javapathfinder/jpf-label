@@ -1,0 +1,9 @@
+target = Loop
+cg.enumerate_random = true
+
+@using jpf-label
+listener = label.StateLabelText;label.StateLabelDot
+label.class = label.ReturnedVoidMethod;label.InvokedStaticMethod;label.PositiveIntegerLocalVariable
+label.InvokedStaticMethod.method = Loop.m(); Loop.n(); Loop.main(java.lang.String[])
+label.ReturnedVoidMethod.method = Loop.main(java.lang.String[]); Loop.m(); Loop.n()
+label.PositiveIntegerLocalVariable.variable = Loop.m():x

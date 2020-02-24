@@ -1,0 +1,7 @@
+target = Field
+cg.enumerate_random = true
+
+@using jpf-label
+listener = label.StateLabelText;label.StateLabelDot
+label.class = label.BooleanStaticField
+label.BooleanStaticField.field = Field.value
