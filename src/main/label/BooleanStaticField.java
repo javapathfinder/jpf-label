@@ -64,8 +64,9 @@ public class BooleanStaticField extends TransitionLabelMaker {
 	public Set<String> getStateLabels(Search search) {
 		Set<String> labels = new HashSet<String>();
 		for (String field : fieldName) {
-			if (Boolean.TRUE.equals(getValue(field))) {
-				labels.add(field.replaceAll("[$.]", "_"));
+			Boolean value = getValue(field);
+			if (value != null) {
+				labels.add(value + "__" + field.replaceAll("[$.]", "_"));
 			}
 		}
 		return labels;
