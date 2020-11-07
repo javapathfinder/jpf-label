@@ -10,14 +10,15 @@ states or enhance the graphical representation of the state space,
 as already provided by JPF, with colouring the states according to their
 labelling.
 
-In order to use jpf-label, a labelling function to label states with
-desired atomic properties must be implemented and specified in the
-application properties file by setting the property label.class.  The
-following classes to label states are provided as part of the package
+In order to use jpf-label, a labelling function is required
+to label states with desired atomic properties must be
+implemented and specified in the application properties
+file by setting the property label.class. The following
+classes to label states are provided as part of the package
 label.  For some classes an additional property needs to be specified as
 indicated below.
 
-1. `Initial`: labels the initial state.
+1. `Initial`: labels of the initial state.
 
 2. `End`: labels the final states (also known as end states).
 
@@ -129,7 +130,7 @@ the resulting file Method.lab contains the following text.
     3: 1
 
 The first line contains an enumeration of all the labels and their index,
-which is a non-negative integer.  The remaining lines each contain the
+which is a non-negative integer. The remaining lines  contain the
 labelling of a state.  This is composed of the state followed by (the
 indices of) the labels of that state.  Note that states are represented by
 either -1 or a non-negative integer.  States that do not have any label
