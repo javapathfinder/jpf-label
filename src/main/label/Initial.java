@@ -48,11 +48,11 @@ public class Initial extends StateLabelMaker {
 	}
 
 	@Override
-	public Set<String> getStateLabels(Search search) {
-		Set<String> labels = new HashSet<String>();
+	public Set<Label> getStateLabels(Search search) {
+		Set<Label> labels = new HashSet<Label>();
 		if (this.init) {
 			this.init = false;
-			labels.add("initial");
+			labels.add(new Label("init", "initial"));
 		}
 		return labels;
 	}

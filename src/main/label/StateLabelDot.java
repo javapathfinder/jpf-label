@@ -111,8 +111,9 @@ public class StateLabelDot extends StateLabel {
 			writer.println("}");
 			writer.close();
 		} catch (FileNotFoundException e) {
-			e.printStackTrace();
+			System.out.println("Listener could not write to the output file " + name + ".dot");
 			search.terminate();
 		}
+		this.generateLegendFile();
 	}
 }

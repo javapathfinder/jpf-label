@@ -21,33 +21,42 @@ indicated below.
 
 2. `End`: labels the final states (also known as end states).
 
-3. `AllDifferent`: labels each state with a different label.
+3. `BooleanStaticField`: labels states with the value of the static boolean
+   field specified by the property label.BooleanStaticField.field.
 
-4. `BooleanStaticField`: labels those states in which the static boolean
-   field specified by the property label.StaticBooleanField.field is true.
+4. `IntegerStaticField`: labels states with the value of the static integer
+   field specified by the property label.IntegerStaticField.field.
 
-5. `PositiveIntegerLocalVariable`: labels those states in which the local
+5. `BooleanLocalVariable`: labels states with the value of the local
+   boolean variable specified by the property
+   label.BooleanLocalVariable.variable.
+
+6. `IntegerLocalVariable`: labels states with the value of the local
    integer variable specified by the property
-   label.LocalPositiveIntegerVariable.variable is positive.
+   label.IntegerLocalVariable.variable.
 
-6. `InvokedStaticMethod`: labels those states in which the method
-   specified by the property label.InvokedStaticMethod.method is invoked.
-
-7. `ReturnedVoidMethod`: labels those states in which the void method
-   specified by the property label.ReturnedVoidMethod.method has returned.
+7. `InvokedMethod`: labels those states in which the method
+   specified by the property label.InvokedMethod.method is invoked.
 
 8. `ReturnedBooleanMethod`: labels those states in which the boolean
    method specified by the property label.ReturnedBooleanMethod.method
    has returned, with the return value.
 
-9. `ThrownException`: labels those states in which an exception of the
+9. `ReturnedIntegerMethod`: labels those states in which the integer
+   method specified by the property label.ReturnedIntegerMethod.method
+   has returned, with the return value.
+
+10. `ReturnedVoidMethod`: labels those states in which the void method
+   specified by the property label.ReturnedVoidMethod.method has returned.
+
+11. `SynchronizedStaticMethod`: labels those states in which the
+   synchronized static method specified by the property
+   label.SynchronizedStaticMethod.method acquires or has released the
+   lock.
+
+12. `ThrownException`: labels those states in which an exception of the
    type specified by the property label.ThrownException.type has
    been thrown.
-
-10. `SynchronizedStaticMethod`: labels those states in which the
-    synchronized method specified by the property
-    label.SynchronizedStaticMethod.method acquires and has released the
-    lock.
 
 Our extension jpf-label provides a framework that allows users to easily
 define their own state labelling, by implementing either of the interfaces
@@ -80,8 +89,7 @@ JPF, extended with jpf-label and configured appropriately, can write the
 labelled state space underlying the above code, represented in DOT
 format, to a file, so that it can be viewed using dotty.  For example,
 if we use the following configuration file to label the initial state,
-final states, and those states in which the static method setValue is
-invoked
+final states, and those states in which the method setValue is invoked
 
     target = Method
     classpath = <path to the directory containing Method.class>
@@ -89,8 +97,8 @@ invoked
 
     @using jpf-label
     listener = label.StateLabelDot
-    label.class = label.Initial; label.End; label.InvokedStaticMethod
-    label.InvokedStaticMethod.method = Method.setValue(int)
+    label.class = label.Initial; label.End; label.InvokedMethod
+    label.InvokedMethod.method = Method.setValue(int)
 
 then JPF produces a file named Method.dot with the following content.
 
@@ -109,7 +117,7 @@ then JPF produces a file named Method.dot with the following content.
 JPF, extended with jpf-label and configured appropriately, can
 also describe the labels in a text file.  For example, if we use the
 following configuration file to label the initial state, final states,
-and those states in which the static method setValue is invoked
+and those states in which the method setValue is invoked
 
     target = Method
     classpath = <path to the directory containing Method.class>
@@ -117,12 +125,12 @@ and those states in which the static method setValue is invoked
 
     @using jpf-label
     listener = label.StateLabelText
-    label.class = label.Initial; label.End; label.InvokedStaticMethod
-    label.InvokedStaticMethod.method = Method.setValue(int)
+    label.class = label.Initial; label.End; label.InvokedMethod
+    label.InvokedMethod.method = Method.setValue(int)
 
 the resulting file Method.lab contains the following text.
 
-    0="initial" 1="end" 2="invoked__Method_setValue__I__V"
+    0="init" 1="end" 2="invoked__Method_setValue__I__V"
     -1: 0
     1: 1
     2: 2

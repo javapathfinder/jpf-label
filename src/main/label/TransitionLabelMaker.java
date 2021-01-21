@@ -29,32 +29,32 @@ import gov.nasa.jpf.vm.Instruction;
 public abstract class TransitionLabelMaker extends StateLabelMaker {
 
 	/**
-	 * Whenever an instruction is executed, determines
-	 * whether to break the current transition after the executed instruction or
-	 * not.
+	 * Whenever an instruction is executed, determines whether to break the current
+	 * transition after the executed instruction or not.
 	 * 
 	 * @param executedInstruction the last instruction that was executed
 	 * @return the set of labels for the new state to break the transition, null
 	 *         otherwise
 	 */
-	public Set<String> breakAfter(Instruction executedInstruction) {
+	public Set<Label> breakAfter(Instruction executedInstruction) {
 		return null;
 	}
 
 	/**
-	 * Whenever an instruction is executed, determines
-	 * whether to break the current transition before the next instruction or not.
+	 * Whenever an instruction is executed, determines whether to break the current
+	 * transition before the next instruction or not.
 	 * 
 	 * @param nextInstruction next instruction which will be executed
 	 * @return the set of labels for the new state to break the transition, null
 	 *         otherwise
 	 */
-	public Set<String> breakBefore(Instruction nextInstruction) {
+	public Set<Label> breakBefore(Instruction nextInstruction) {
 		return null;
 	}
 
 	/**
-	 * This method is run whenever JPF's VM is about to execute the next instruction.
+	 * This method is run whenever JPF's VM is about to execute the next
+	 * instruction.
 	 * 
 	 * @param instructionToExecute The next instruction to be executed
 	 */

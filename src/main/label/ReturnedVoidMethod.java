@@ -55,16 +55,16 @@ public class ReturnedVoidMethod extends TransitionLabelMaker {
 	}
 
 	@Override
-	public Set<String> breakAfter(Instruction executedInstruction) {
+	public Set<Label> breakAfter(Instruction executedInstruction) {
 		if (executedInstruction instanceof RETURN) {
 			RETURN instruction = (RETURN) executedInstruction;
 			MethodInfo methodInfo = instruction.getMethodInfo();
 			for (String method : methodName) {
 				if (MethodSpec.createMethodSpec(method).matches(methodInfo)) {
-					Set<String> labels = new HashSet<String>();
+					Set<Label> labels = new HashSet<Label>();
 					String signature = methodInfo.getClassName().replaceAll("[$.]", "_") + "_"
 							+ methodInfo.getJNIName();
-					labels.add("returned__" + signature);
+					labels.add(new Label("returned__" + signature, method + " returned"));
 					return labels;
 				}
 			}

@@ -46,10 +46,10 @@ public class End extends StateLabelMaker {
 	}
 
 	@Override
-	public Set<String> getStateLabels(Search search) {
-		Set<String> labels = new HashSet<String>();
+	public Set<Label> getStateLabels(Search search) {
+		Set<Label> labels = new HashSet<Label>();
 		if (search.isEndState()) {
-			labels.add("end");
+			labels.add(new Label("end", "end"));
 		}
 		return labels;
 	}

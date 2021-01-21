@@ -32,16 +32,15 @@ import gov.nasa.jpf.vm.StackFrame;
 import gov.nasa.jpf.vm.ThreadInfo;
 
 /**
- * A labeling function for a boolean local variable.
+ * A labeling function for an integer local variable.
  * 
  * The variables to be labeled can be specified in the application properties
- * file by setting the property label.BooleanLocalVariable. Variable signatures
+ * file by setting the property label.IntegerLocalVariable. Variable signatures
  * must be in the following format: package.class.methodSignature:variableName
  * 
- * @author Xiang Chen (Echo)
  * @author Syyeda Zainab Fatmi
  */
-public class BooleanLocalVariable extends TransitionLabelMaker {
+public class IntegerLocalVariable extends TransitionLabelMaker {
 	private String[] varName; // variable signature
 	private Integer previousValue; // the previous value
 
@@ -52,8 +51,8 @@ public class BooleanLocalVariable extends TransitionLabelMaker {
 	/**
 	 * Initializes this labeling function.
 	 */
-	private BooleanLocalVariable(Config configuration) {
-		varName = getConfiguredProperty(configuration, "label.BooleanLocalVariable.variable");
+	private IntegerLocalVariable(Config configuration) {
+		varName = getConfiguredProperty(configuration, "label.IntegerLocalVariable.variable");
 		lastModified = null;
 		lastValue = null;
 		lastMethod = null;
@@ -61,13 +60,13 @@ public class BooleanLocalVariable extends TransitionLabelMaker {
 	}
 
 	/**
-	 * Creates a BooleanLocalVariable object.
+	 * Creates a IntegerLocalVariable object.
 	 * 
 	 * @param configuration JPF's configuration
 	 * @return an instance of this class
 	 */
-	public static BooleanLocalVariable getInstance(Config configuration) {
-		return new BooleanLocalVariable(configuration);
+	public static IntegerLocalVariable getInstance(Config configuration) {
+		return new IntegerLocalVariable(configuration);
 	}
 
 	@Override
@@ -76,9 +75,9 @@ public class BooleanLocalVariable extends TransitionLabelMaker {
 		for (String var : varName) {
 			Integer value = getValue(var);
 			if (value != null) {
-				// label the state and indicate if it's value is true or false
-				boolean v = (value.equals(0) ? false : true);
-				labels.add(new Label(v + "__" + getSignature(var), var + " = " + v));
+				// label the state with the value of the local variable
+				String sign = (value < 0 ? "minus" : "");
+				labels.add(new Label(sign + Math.abs(value) + "__" + getSignature(var), var + " = " + value));
 			}
 		}
 		return labels;
@@ -86,8 +85,8 @@ public class BooleanLocalVariable extends TransitionLabelMaker {
 
 	@Override
 	public Set<Label> breakAfter(Instruction executedInstruction) {
-		// break the transition after the local variable instruction
-		// if the variable value has changed
+		// break the transition after the local variable instruction, if the variable
+		// value has changed
 		MethodInfo mi = executedInstruction.getMethodInfo();
 		this.lastMethod = mi;
 		int pc = executedInstruction.getPosition();
@@ -157,9 +156,9 @@ public class BooleanLocalVariable extends TransitionLabelMaker {
 	}
 
 	/**
-	 * Returns the value of the given boolean variable.
+	 * Returns the value of the given integer variable.
 	 * 
-	 * @param localVariable the signature of the boolean local variable
+	 * @param localVariable the signature of the integer local variable
 	 * @return the value of the variable if it is defined, else null.
 	 */
 	private Integer getValue(String localVariable) {

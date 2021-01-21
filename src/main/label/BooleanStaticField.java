@@ -61,27 +61,27 @@ public class BooleanStaticField extends TransitionLabelMaker {
 	}
 
 	@Override
-	public Set<String> getStateLabels(Search search) {
-		Set<String> labels = new HashSet<String>();
+	public Set<Label> getStateLabels(Search search) {
+		Set<Label> labels = new HashSet<Label>();
 		for (String field : fieldName) {
 			Boolean value = getValue(field);
 			if (value != null) {
-				labels.add(value + "__" + field.replaceAll("[$.]", "_"));
+				labels.add(new Label(value + "__" + field.replaceAll("[$.]", "_"), field + " = " + value));
 			}
 		}
 		return labels;
 	}
 
 	@Override
-	public Set<String> breakAfter(Instruction executedInstruction) {
+	public Set<Label> breakAfter(Instruction executedInstruction) {
 		// static attributes are set in PUTSTATIC instructions
 		if (executedInstruction instanceof PUTSTATIC) {
 			PUTSTATIC instruction = (PUTSTATIC) executedInstruction;
 			FieldInfo fieldInfo = instruction.getFieldInfo();
 			// if the instruction modifies an attribute of interest, break the transition
 			for (String field : fieldName) {
-				if (FieldSpec.createFieldSpec(field).matches(fieldInfo) && !getValue(field).equals(previousValue)) { 
-					return new HashSet<String>(); 
+				if (FieldSpec.createFieldSpec(field).matches(fieldInfo) && !getValue(field).equals(previousValue)) {
+					return new HashSet<Label>();
 				}
 			}
 		}

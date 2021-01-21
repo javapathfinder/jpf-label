@@ -43,10 +43,10 @@ public class ThrownException extends TransitionLabelMaker {
 	private String[] exceptionName; // exception signature
 	private String exceptionThrown; // the next exception to be thrown
 
-        /**
+	/**
 	 * Initializes this labeling function.
 	 *
-	 *@param configuration JPF's configuration
+	 * @param configuration JPF's configuration
 	 */
 	private ThrownException(Config configuration) {
 		exceptionName = getConfiguredProperty(configuration, "label.ThrownException.type");
@@ -64,12 +64,12 @@ public class ThrownException extends TransitionLabelMaker {
 	}
 
 	@Override
-	public Set<String> breakAfter(Instruction executedInstruction) {
+	public Set<Label> breakAfter(Instruction executedInstruction) {
 		if (executedInstruction instanceof ATHROW) {
 			for (int i = 0; i < exceptionName.length; i++) {
 				if (exceptionThrown.equals(exceptionName[i])) {
-					Set<String> labels = new HashSet<String>();
-					labels.add(exceptionThrown.replaceAll("[$.]", "_"));
+					Set<Label> labels = new HashSet<Label>();
+					labels.add(new Label(exceptionThrown.replaceAll("[$.]", "_"), exceptionThrown));
 					return labels;
 				}
 			}

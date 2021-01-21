@@ -1,27 +1,27 @@
 digraph statespace {
 node [colorscheme="set312" style=wedged]
--1 [fillcolor="1:2"]
-0 [fillcolor="3:4:5"]
+-1 [style=filled fillcolor=1]
+0 [fillcolor="2:3"]
 -1 -> 0
-1 [fillcolor="4:5:6:7"]
+1 [fillcolor="2:3:4"]
 0 -> 1
-2 [fillcolor="5:8:9"]
+2 [fillcolor="2:5"]
 1 -> 2
-3 [fillcolor="5:9:10:11"]
+3 [fillcolor="2:5:6"]
 2 -> 3
-4 [fillcolor="5:9:12:#80f31f"]
+4 [fillcolor="2:5:7"]
 3 -> 4
-5 [fillcolor="4:5:#80f31f:#d5078e"]
+5 [fillcolor="2:3:7"]
 4 -> 5
-6 [fillcolor="5:9:#80f31f:#01beca"]
+6 [fillcolor="2:5:7"]
 5 -> 6
-7 [fillcolor="5:9:#e49c03:#6917ed"]
+7 [fillcolor="2:5:8"]
 6 -> 7
-8 [fillcolor="4:5:#3bfd5b:#fa2e48"]
+8 [fillcolor="2:3:9"]
 0 -> 8
-9 [fillcolor="5:9:#0f79f5"]
+9 [fillcolor="2:5"]
 8 -> 9
-10 [fillcolor="5:9:#abda09:#b001b9"]
+10 [fillcolor="2:5:10"]
 9 -> 10
 10 -> 4
 }

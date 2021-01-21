@@ -30,8 +30,8 @@ import gov.nasa.jpf.vm.bytecode.ReturnInstruction;
 
 /**
  * A labeling function for the locking and unlocking of synchronized methods
- * (that is, the state before the method is invoked and the state after the method
- * returns are labeled).
+ * (that is, the state before the method is invoked and the state after the
+ * method returns are labeled).
  * 
  * The methods to be labeled can be specified in the application properties file
  * by setting the property label.SynchronizedStaticMethod. Method signatures
@@ -60,17 +60,17 @@ public class SynchronizedStaticMethod extends TransitionLabelMaker {
 	}
 
 	@Override
-	public Set<String> breakAfter(Instruction executedInstruction) {
+	public Set<Label> breakAfter(Instruction executedInstruction) {
 		if (executedInstruction instanceof ReturnInstruction) {
 			ReturnInstruction instruction = (ReturnInstruction) executedInstruction;
 			MethodInfo methodInfo = instruction.getMethodInfo();
-			if (Modifier.isSynchronized(methodInfo.getModifiers())) {
+			if (Modifier.isSynchronized(methodInfo.getModifiers()) && Modifier.isStatic(methodInfo.getModifiers())) {
 				for (String method : methodName) {
 					if (MethodSpec.createMethodSpec(method).matches(methodInfo)) {
-						Set<String> labels = new HashSet<String>();
+						Set<Label> labels = new HashSet<Label>();
 						String signature = methodInfo.getClassName().replaceAll("[$.]", "_") + "_"
 								+ methodInfo.getJNIName();
-						labels.add("unlocked__" + signature);
+						labels.add(new Label("unlocked__" + signature, method + " unlocked"));
 						return labels;
 					}
 				}
@@ -80,7 +80,7 @@ public class SynchronizedStaticMethod extends TransitionLabelMaker {
 	}
 
 	@Override
-	public Set<String> breakBefore(Instruction nextInstruction) {
+	public Set<Label> breakBefore(Instruction nextInstruction) {
 		if (nextInstruction instanceof INVOKESTATIC) {
 			JVMInvokeInstruction instruction = (JVMInvokeInstruction) nextInstruction;
 			MethodInfo methodInfo = instruction.getInvokedMethod();
@@ -88,10 +88,10 @@ public class SynchronizedStaticMethod extends TransitionLabelMaker {
 			if (Modifier.isSynchronized(methodInfo.getModifiers())) {
 				for (String method : methodName) {
 					if (MethodSpec.createMethodSpec(method).matches(methodInfo)) {
-						Set<String> labels = new HashSet<String>();
+						Set<Label> labels = new HashSet<Label>();
 						String signature = methodInfo.getClassName().replaceAll("[$.]", "_") + "_"
 								+ methodInfo.getJNIName();
-						labels.add("locked__" + signature);
+						labels.add(new Label("locked__" + signature, method + " locked"));
 						return labels;
 					}
 				}

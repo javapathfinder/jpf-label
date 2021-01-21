@@ -56,19 +56,19 @@ public class ReturnedIntegerMethod extends TransitionLabelMaker {
 	}
 
 	@Override
-	public Set<String> breakAfter(Instruction executedInstruction) {
+	public Set<Label> breakAfter(Instruction executedInstruction) {
 		if (executedInstruction instanceof IRETURN) {
 			IRETURN instruction = (IRETURN) executedInstruction;
 			MethodInfo methodInfo = instruction.getMethodInfo();
 			for (String method : methodName) {
 				if (MethodSpec.createMethodSpec(method).matches(methodInfo)) {
-					Set<String> labels = new HashSet<String>();
+					Set<Label> labels = new HashSet<Label>();
 					int returnedValue = instruction.getReturnValue();
-					String sign = (returnedValue < 0 ? "neg" : "pos");
-					returnedValue = Math.abs(returnedValue);
+					String sign = (returnedValue < 0 ? "minus" : "");
 					String signature = methodInfo.getClassName().replaceAll("[$.]", "_") + "_"
 							+ methodInfo.getJNIName();
-					labels.add(sign + returnedValue + "__" + signature);
+					labels.add(new Label(sign + Math.abs(returnedValue) + "__" + signature,
+							method + " returned " + returnedValue));
 					return labels;
 				}
 			}

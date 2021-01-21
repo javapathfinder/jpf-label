@@ -24,11 +24,11 @@ import gov.nasa.jpf.Config;
 import gov.nasa.jpf.search.Search;
 
 /**
- * This listener outputs the labels of the state space to a file, named
- * &lt;name of system under test&gt;.lab, in the format described below. All
- * possible labels are enumerated by positive integers in the first line of the
- * file. Subsequent lines capture the labeled states as follows: the state id
- * followed by a colon and each of its labels, separated by a single space.
+ * This listener outputs the labels of the state space to a file, named &lt;name
+ * of system under test&gt;.lab, in the format described below. All possible
+ * labels are enumerated by positive integers in the first line of the file.
+ * Subsequent lines capture the labeled states as follows: the state id followed
+ * by a colon and each of its labels, separated by a single space.
  * 
  * @author Syyeda Zainab Fatmi
  */
@@ -81,7 +81,7 @@ public class StateLabelText extends StateLabel {
 		StringBuilder labelNames = new StringBuilder(); // enumeration of labels
 		int n = this.allLabels.size();
 		for (int i = 0; i < n; i++) {
-			labelNames.append(i + "=\"" + this.allLabels.get(i) + "\" ");
+			labelNames.append(i + "=\"" + this.allLabels.get(i).getName() + "\" ");
 		}
 		return labelNames.toString();
 	}

@@ -16,6 +16,8 @@
  */
 package label;
 
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.TreeSet;
@@ -41,7 +43,7 @@ import gov.nasa.jpf.vm.VMListener;
  * @author Syyeda Zainab Fatmi
  */
 public abstract class StateLabel extends ListenerAdapter implements SearchListener, VMListener {
-	protected List<String> allLabels; // string representation of all possible labels
+	protected List<Label> allLabels; // string representation of all possible labels
 	private List<StateLabelMaker> labelMakers; // registered label makers
 	private Set<Integer> currentStateLabels; // labels for the current state
 	private int states; // number of states
@@ -52,7 +54,7 @@ public abstract class StateLabel extends ListenerAdapter implements SearchListen
 	 * @param configuration JPF's configuration
 	 */
 	public StateLabel(Config configuration) {
-		this.allLabels = new ArrayList<String>();
+		this.allLabels = new ArrayList<Label>();
 		this.labelMakers = new ArrayList<StateLabelMaker>();
 		this.currentStateLabels = new TreeSet<Integer>();
 		this.states = 0;
@@ -62,7 +64,8 @@ public abstract class StateLabel extends ListenerAdapter implements SearchListen
 			try {
 				Class clazz = Class.forName(name);
 				Method method = clazz.getDeclaredMethod("getInstance", gov.nasa.jpf.Config.class);
-				Object result = method.invoke(null, configuration); // result of invoking name.getInstance(configuration)
+				Object result = method.invoke(null, configuration); // result of invoking
+																	// name.getInstance(configuration)
 				this.labelMakers.add((StateLabelMaker) result);
 			} catch (Exception e) {
 				System.out.println("Class " + name + " could not be instantiated");
@@ -120,7 +123,7 @@ public abstract class StateLabel extends ListenerAdapter implements SearchListen
 	/**
 	 * Formats the labelling of the given state with the given set of labels.
 	 * 
-	 * @param id the id of the state
+	 * @param id     the id of the state
 	 * @param labels the set of indices of the labels
 	 */
 	public abstract void labelState(int id, Set<Integer> labels);
@@ -129,7 +132,7 @@ public abstract class StateLabel extends ListenerAdapter implements SearchListen
 	 * Writes the current labelling of the state space to a file.
 	 * 
 	 * @param search JPF's search
-	 * @param name the name of the system under test, appended with the search
+	 * @param name   the name of the system under test, appended with the search
 	 *               constraint if one was hit.
 	 */
 	public abstract void writeStateLabels(Search search, String name);
@@ -150,7 +153,7 @@ public abstract class StateLabel extends ListenerAdapter implements SearchListen
 		this.currentStateLabels = new TreeSet<Integer>(); // labels for the new state
 		for (StateLabelMaker labelMaker : this.labelMakers) {
 			if (labelMaker instanceof TransitionLabelMaker) {
-				Set<String> labels = ((TransitionLabelMaker) labelMaker).breakAfter(executedInstruction);
+				Set<Label> labels = ((TransitionLabelMaker) labelMaker).breakAfter(executedInstruction);
 				b |= addLabelIndices(labels);
 				labels = ((TransitionLabelMaker) labelMaker).breakBefore(nextInstruction);
 				b |= addLabelIndices(labels);
@@ -162,8 +165,8 @@ public abstract class StateLabel extends ListenerAdapter implements SearchListen
 	}
 
 	/**
-	 * Whenever VM is about to execute the next instruction, allows the 
-	 * registered label makers to obtain any required information.
+	 * Whenever VM is about to execute the next instruction, allows the registered
+	 * label makers to obtain any required information.
 	 * 
 	 * @param vm                   JPF's virtual machine
 	 * @param currentThread        the current thread
@@ -207,6 +210,36 @@ public abstract class StateLabel extends ListenerAdapter implements SearchListen
 	}
 
 	/**
+	 * Produces a dot file with a legend mapping each colour to the description of
+	 * the label it represents. The name of the dot file is &lt;name of system under
+	 * test&gt;_legend.dot.
+	 */
+	protected void generateLegendFile() {
+		String name = VM.getVM().getSUTName() + "_legend.dot";
+		try {
+			PrintWriter writer = new PrintWriter(name);
+			writer.println("digraph legend {");
+			writer.println("node [colorscheme=\"set312\" shape=plaintext]");
+			writer.println("{ legend_node [");
+			writer.println("label=<");
+			writer.println("<table border=\"0\" cellborder=\"0\" cellspacing=\"0\">");
+			writer.println("<tr><td colspan=\"2\">Legend</td></tr>");
+			int n = this.allLabels.size();
+			for (int i = 0; i < n; i++) {
+				writer.println("<tr><td width=\"35\" bgcolor=\"" + this.getColour(i) + "\"></td><td align=\"left\">"
+						+ this.allLabels.get(i).getDescription() + "</td></tr>");
+			}
+			writer.println("</table>>");
+			writer.println("];}");
+			writer.println("}");
+			writer.close();
+		} catch (FileNotFoundException e) {
+			System.out.println("Listener could not write to the legend file " + name);
+			e.printStackTrace();
+		}
+	}
+
+	/**
 	 * Obtains the the labels for the current state of JPF's search from the label
 	 * makers and adds their indices to the set of labels for the current state.
 	 * 
@@ -219,15 +252,15 @@ public abstract class StateLabel extends ListenerAdapter implements SearchListen
 	}
 
 	/**
-	 * Takes the given set of labels and adds their indices to the set of labels for the
-	 * current state.
+	 * Takes the given set of labels and adds their indices to the set of labels for
+	 * the current state.
 	 * 
 	 * @param labels the set of labels
 	 * @return false if the given set was null, true otherwise
 	 */
-	private boolean addLabelIndices(Set<String> labels) {
+	private boolean addLabelIndices(Set<Label> labels) {
 		if (labels != null) {
-			for (String label : labels) {
+			for (Label label : labels) {
 				if (!this.allLabels.contains(label)) {
 					this.allLabels.add(label);
 				}

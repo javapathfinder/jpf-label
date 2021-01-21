@@ -51,11 +51,11 @@ public class StateLabelTest extends TestJPF {
 		private static boolean attribute;
 
 		/** Method used in invokedMethodTest and multipleTest */
-		public static void m() {
+		public void m() {
 			x = true;
 		}
 
-		/** Method used in returnedMethodTest and multipleTest */
+		/** Method used in returnedVoidMethodTest and multipleTest */
 		public static void n() {
 			x = true;
 		}
@@ -77,13 +77,12 @@ public class StateLabelTest extends TestJPF {
 	 */
 	private static String[] multipleLabelMakerProperties = { "+cg.enumerate_random=true",
 			"+listener=label.StateLabelText;label.StateLabelDot",
-			"+label.class = label.AllDifferent; label.Initial; label.End;"
-					+ "label.InvokedStaticMethod; label.PositiveIntegerLocalVariable;"
-					+ "label.ReturnedVoidMethod; label.BooleanStaticField",
+			"+label.class = label.Initial; label.End; label.IntegerLocalVariable;"
+					+ "label.InvokedMethod; label.ReturnedVoidMethod; label.BooleanStaticField",
 			"+label.BooleanStaticField.field = label.StateLabelTest$Tester.x; label.StateLabelTest$Tester.condition",
-			"+label.InvokedStaticMethod.method = label.StateLabelTest$Tester.m(); label.StateLabelTest$Tester.n()",
+			"+label.InvokedMethod.method = label.StateLabelTest$Tester.m(); label.StateLabelTest$Tester.n()",
 			"+label.ReturnedVoidMethod.method = label.StateLabelTest$Tester.m(); label.StateLabelTest$Tester.n()",
-			"+label.PositiveIntegerLocalVariable.variable = label.StateLabelTest.multipleTest():y;"
+			"+label.IntegerLocalVariable.variable = label.StateLabelTest.multipleTest():y;"
 					+ "label.StateLabelTest.fieldAndVarTest():a; label.StateLabelTest.fieldAndVarTest():b" };
 
 	/**
@@ -121,6 +120,9 @@ public class StateLabelTest extends TestJPF {
 
 		File dottyFile = new File(dottyFileName);
 		dottyFile.delete();
+
+		File legendFile = new File(StateLabelTest.class.getName() + "_legend.dot");
+		legendFile.delete();
 	}
 
 	/**
@@ -134,8 +136,8 @@ public class StateLabelTest extends TestJPF {
 		if (verifyNoPropertyViolation(singleLabelMakerProperties)) {
 			// do nothing
 		} else {
-			long length = new File(labelFileName).length();
-			assertTrue("One or two lines expected, " + length + " lines found", length == 1 || length == 2); // one or two new lines
+			long length = new File(labelFileName).length(); // one or two new lines
+			assertTrue("One or two lines expected, " + length + " lines found", length == 1 || length == 2);
 			assertTrue(filesEqual(dottyFileName, path + "empty.dot"));
 		}
 	}
@@ -183,27 +185,6 @@ public class StateLabelTest extends TestJPF {
 	}
 
 	/**
-	 * Tests the listeners with labeling each state with a different character.
-	 */
-	@Test
-	public void allDifferentTest() {
-		singleLabelMakerProperties[2] = "+label.class=label.AllDifferent";
-		singleLabelMakerProperties[3] = "";
-
-		if (verifyNoPropertyViolation(singleLabelMakerProperties)) {
-			Random random = new Random();
-			if (random.nextBoolean()) {
-				Tester.attribute = true;
-			} else {
-				Tester.attribute = false;
-			}
-		} else {
-			assertTrue(filesEqual(labelFileName, path + "allDifferent.lab"));
-			assertTrue(filesEqual(dottyFileName, path + "allDifferent.dot"));
-		}
-	}
-
-	/**
 	 * Tests the listeners with labeling the static boolean attribute "condition".
 	 */
 	@Test
@@ -233,35 +214,35 @@ public class StateLabelTest extends TestJPF {
 	 * Tests the listeners with labeling local variables.
 	 */
 	@Test
-	public void positiveIntegerLocalVariableTest() {
-		singleLabelMakerProperties[2] = "+label.class=label.PositiveIntegerLocalVariable";
-		singleLabelMakerProperties[3] = "+label.PositiveIntegerLocalVariable.variable = label.StateLabelTest.positiveIntegerLocalVariableTest():variable";
+	public void integerLocalVariableTest() {
+		singleLabelMakerProperties[2] = "+label.class=label.IntegerLocalVariable";
+		singleLabelMakerProperties[3] = "+label.IntegerLocalVariable.variable = label.StateLabelTest.integerLocalVariableTest():variable";
 
 		if (verifyNoPropertyViolation(singleLabelMakerProperties)) {
 			int variable = 0;
-			variable++; // positive
-			variable -= 3;
-			variable--;
-			variable = 5; // positive
-			variable /= 2; // positive
+			variable++; // 1
+			variable -= 3; // -2
+			variable--; // -3
+			variable = 5;
+			variable /= 2; // 2
+			variable %= 14; // 2 -> no break
 			variable = (int) -12.0;
-			variable *= 2;
-			variable += 92; // positive
-			variable = variable - 110;
-			variable = 14;
+			variable *= 2; // -24
+			variable += 92; // 68
+			variable = variable - 110; // -42
 		} else {
-			assertTrue(filesEqual(labelFileName, path + "positiveIntegerLocalVariable.lab"));
-			assertTrue(filesEqual(dottyFileName, path + "positiveIntegerLocalVariable.dot"));
+			assertTrue(filesEqual(labelFileName, path + "integerLocalVariable.lab"));
+			assertTrue(filesEqual(dottyFileName, path + "integerLocalVariable.dot"));
 		}
 	}
 
 	/**
-	 * Tests the listeners with labeling the invoke of a static method.
+	 * Tests the listeners with labeling the invoke of a method.
 	 */
 	@Test
-	public void invokedStaticMethodTest() {
-		singleLabelMakerProperties[2] = "+label.class=label.InvokedStaticMethod";
-		singleLabelMakerProperties[3] = "+label.InvokedStaticMethod.method = label.StateLabelTest$Tester.m()";
+	public void invokedMethodTest() {
+		singleLabelMakerProperties[2] = "+label.class=label.InvokedMethod";
+		singleLabelMakerProperties[3] = "+label.InvokedMethod.method = label.StateLabelTest$Tester.m()";
 
 		if (verifyNoPropertyViolation(singleLabelMakerProperties)) {
 			Random random = new Random();
@@ -271,16 +252,17 @@ public class StateLabelTest extends TestJPF {
 				Tester.attribute = false;
 			}
 			if (Tester.attribute) {
-				Tester.m();
+				Tester t = new Tester();
+				t.m();
 			}
 		} else {
-			assertTrue(filesEqual(labelFileName, path + "invokedStaticMethod.lab"));
-			assertTrue(filesEqual(dottyFileName, path + "staticMethod.dot"));
+			assertTrue(filesEqual(labelFileName, path + "invokedMethod.lab"));
+			assertTrue(filesEqual(dottyFileName, path + "method.dot"));
 		}
 	}
 
 	/**
-	 * Tests the listeners with labeling the return of a static method.
+	 * Tests the listeners with labeling the return of a method.
 	 */
 	@Test
 	public void returnedVoidMethodTest() {
@@ -299,13 +281,13 @@ public class StateLabelTest extends TestJPF {
 			}
 		} else {
 			assertTrue(filesEqual(labelFileName, path + "returnedVoidMethod.lab"));
-			assertTrue(filesEqual(dottyFileName, path + "staticMethod.dot"));
+			assertTrue(filesEqual(dottyFileName, path + "method.dot"));
 		}
 	}
 
 	/**
 	 * Tests the listeners with labeling the locking and unlocking of a synchronized
-	 * method.
+	 * static method.
 	 */
 	@Test
 	public void synchronizedStaticMethodTest() {
@@ -371,7 +353,8 @@ public class StateLabelTest extends TestJPF {
 			}
 			Random random = new Random();
 			if (random.nextBoolean()) {
-				Tester.m();
+				Tester t = new Tester();
+				t.m();
 			} else {
 				Tester.n();
 			}
@@ -398,12 +381,12 @@ public class StateLabelTest extends TestJPF {
 			Tester.condition = false;
 			Tester.attribute = false; // not labeled
 			int a = 1;
-			int b = -5;
+			int b = -1;
 			int c = -2; // not labeled
 
 			Tester.x = false;
 			a = -4;
-			for (int i = 0; i < 12; i++) {
+			for (int i = 0; i < 3; i++) {
 				b++;
 			}
 			Random random = new Random();

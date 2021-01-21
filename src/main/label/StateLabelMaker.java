@@ -42,13 +42,13 @@ public abstract class StateLabelMaker {
 	}
 
 	/**
-	 * Whenever the search advances to the next state, 
-	 * returns the labels associated with the new state.
+	 * Whenever the search advances to the next state, returns the labels associated
+	 * with the new state.
 	 * 
 	 * @param search JPF's search
 	 * @return an array of labels for the current state
 	 */
-	public Set<String> getStateLabels(Search search) {
+	public Set<Label> getStateLabels(Search search) {
 		return null;
 	}
 

@@ -55,17 +55,17 @@ public class ReturnedBooleanMethod extends TransitionLabelMaker {
 	}
 
 	@Override
-	public Set<String> breakAfter(Instruction executedInstruction) {
+	public Set<Label> breakAfter(Instruction executedInstruction) {
 		if (executedInstruction instanceof IRETURN) {
 			IRETURN instruction = (IRETURN) executedInstruction;
 			MethodInfo methodInfo = instruction.getMethodInfo();
 			for (String method : methodName) {
 				if (MethodSpec.createMethodSpec(method).matches(methodInfo)) {
-					Set<String> labels = new HashSet<String>();
+					Set<Label> labels = new HashSet<Label>();
 					boolean returnedValue = instruction.getReturnValue() != 0;
 					String signature = methodInfo.getClassName().replaceAll("[$.]", "_") + "_"
 							+ methodInfo.getJNIName();
-					labels.add(returnedValue + "__" + signature);
+					labels.add(new Label(returnedValue + "__" + signature, method + " returned " + returnedValue));
 					return labels;
 				}
 			}
