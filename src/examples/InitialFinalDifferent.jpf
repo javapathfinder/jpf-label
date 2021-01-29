@@ -1,6 +1,0 @@
-target = Field
-cg.enumerate_random = true
-
-@using jpf-label
-listener = label.StateLabelText;label.StateLabelDot
-label.class = label.Initial; label.End; label.AllDifferent
