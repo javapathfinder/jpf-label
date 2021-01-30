@@ -3,5 +3,5 @@ cg.enumerate_random = true
 
 @using jpf-label
 listener = label.StateLabelText;label.StateLabelDot
-label.class = label.InvokedStaticMethod
-label.InvokedStaticMethod.method = Method.setValue(int)
+label.class = label.InvokedMethod
+label.InvokedMethod.method = Method.setValue(int)

@@ -1,0 +1,7 @@
+target = BooleanMethod
+cg.enumerate_random = true
+
+@using jpf-label
+listener = label.StateLabelText;label.StateLabelDot
+label.class = label.ReturnedBooleanMethod
+label.ReturnedBooleanMethod.method = BooleanMethod.getRandom()

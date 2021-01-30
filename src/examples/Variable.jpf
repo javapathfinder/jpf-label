@@ -3,5 +3,5 @@ cg.enumerate_random = true
 
 @using jpf-label
 listener = label.StateLabelText;label.StateLabelDot
-label.class = label.PositiveIntegerLocalVariable
-label.PositiveIntegerLocalVariable.variable = Variable.main(java.lang.String[]):value
+label.class = label.IntegerLocalVariable
+label.IntegerLocalVariable.variable = Variable.main(java.lang.String[]):value

@@ -14,17 +14,21 @@
  * You can find a copy of the GNU General Public License at
  * <http://www.gnu.org/licenses/>.
  */
+import java.util.Random;
 
 /**
- * A sample app that illustrates the use of the labelling class label.IntegerLocalVariable.
+ * A sample app that illustrates the use of the labelling class label.ReturnedBooleanMethod.
  *
  * @author Syyeda Zainab Fatmi
  */
-public class Variable {
-	public static void main(String[] args) {
-		int value = 0;
-		value++;
-		value = value % 5;
-		value -= 2;
+public class BooleanMethod {
+	public  boolean  getRandom () {
+		Random  random = new  Random ();
+		return  random.nextBoolean ();
+	}
+	
+	public  static  void  main(String [] args) {
+		BooleanMethod  instance = new  BooleanMethod ();
+		instance.getRandom ();
 	}
 }

@@ -17,7 +17,7 @@
 import java.util.Random;
 
 /**
- * A sample app that illustrates the use of the labelling class label.InvokedStaticMethod
+ * A sample app that illustrates the use of the labelling classes label.InvokedMethod
  * and label.ReturnedVoidMethod.
  *
  * @author Syyeda Zainab Fatmi
